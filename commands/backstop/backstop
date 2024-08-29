@@ -4,4 +4,10 @@
 ## Usage: backstop [flags] [args]
 ## Example: ddev backstop test --target=local --list=alls
 
-cd ../web && backstop --config=/src/backstop-local.json "$@"
+configFile="/src/backstop.json"
+
+if [ -f /src/backstop-local.json ]; then
+    configFile="/src/backstop-local.json"
+fi
+
+cd ../web && backstop --config=${configFile} "$@"

@@ -12,7 +12,7 @@ setup() {
 }
 
 health_checks() {
-  ddev backstop init
+  ddev backstop
 }
 
 teardown() {

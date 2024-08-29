@@ -1,17 +1,16 @@
-#ddev-generated
-# Simple template to demonstrate addon-template
+# BackstopJs service.
 services:
   backstop:
     container_name: ddev-${DDEV_SITENAME}-backstop
-    image: backstopjs/backstopjs:6.3.23
-    command: tail -f /dev/null
-    networks: [default, ddev_default]
-    restart: "no"
-    # These labels ensure this service is discoverable by ddev.
-    labels:
-      com.ddev.site-name: ${DDEV_SITENAME}
-      com.ddev.approot: $DDEV_APPROOT
-
+    image: "backstopjs/backstopjs:6.3.23"
+    init: true
+    entrypoint: top -b
     volumes:
-    - ".:/mnt/ddev_config"
-    - "ddev-global-cache:/mnt/ddev-global-cache"
+      - ../tests/backstop:/src
+      - ../web/:/web
+      - ".:/mnt/ddev_config:ro"
+      - ddev-global-cache:/mnt/ddev-global-cache
+    shm_size: 2gb
+    labels:
+         com.ddev.site-name: ${DDEV_SITENAME}
+         com.ddev.approot: $DDEV_APPROOT

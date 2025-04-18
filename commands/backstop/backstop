@@ -1,13 +1,36 @@
 #!/bin/sh
 
 ## Description: Run backstop visual regression tests
-## Usage: backstop [flags] [args]
+## Usage: backstop [command] [args]
 ## Example: ddev backstop test --target=local --list=alls
 
-configFile="/src/backstop.json"
-
+# Get the default location of the config file.
+default_config="/src/backstop.json"
 if [ -f /src/backstop-local.json ]; then
-    configFile="/src/backstop-local.json"
+  default_config="/src/backstop-local.json"
 fi
 
-cd ../web && backstop --config=${configFile} "$@"
+# --config may have been passed in.  If so use it, but also pass the rest of the
+# arguments on.
+while [ $# -gt 0 ]; do
+  case "$1" in
+    init|test|reference)
+      command="$1"
+      ;;
+
+    --config=*)
+      config="${1#*=}"
+      ;;
+
+    *)
+      new_args="$new_args $1"
+  esac
+  shift
+done
+
+# Use the passed-in config if it exists.
+if [ -z "$config" ]; then
+  config="$default_config"
+fi
+
+cd ../web && backstop "$command" --config=${config} "$new_args"
